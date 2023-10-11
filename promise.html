@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #b8b4b4;
+      }
+
+      input[type="text"] {
+        width: 60%;
+        padding: 10px 20px;
+        margin: 30px auto;
+        display: block;
+        border: 1px solid #c4bfbf;
+        border-radius: 5px;
+        box-shadow: #02172e;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" name="url" id="url" />
+    <button id="btn">Download</button>
+    <a href="/index.html">Previous</a>
+
+    <script>
+      const urlInput = document.getElementById("url");
+      const downloadBtn = document.getElementById("btn");
+
+      downloadBtn.addEventListener("click", () => {
+        const downloadFile = new Promise((resolve, reject) => {
+          const url = urlInput.value;
+
+          fetch(url)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.blob();
+            })
+            .then((file) => {
+              resolve(file);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        });
+
+        downloadFile
+          .then((file) => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(file);
+            link.download = new Date().getTime().toString();
+            link.click();
+          })
+          .catch((error) => {
+            alert("File did not download: " + error.message);
+          });
+      });
+    </script>
+  </body>
+</html>
